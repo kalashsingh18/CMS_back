@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from models.models import FeeStructure ,User# Import Models
-from schemas.schemas import FeeStructureBase,ShowFeeRequest  # Import Schema
+from models.models import FeeStructure ,User,Kota# Import Models
+from schemas.schemas import FeeStructureBase,ShowFeeRequest,KotaCreate  # Import Schema
 from dependencies import get_db 
 
 router = APIRouter()
@@ -29,3 +29,11 @@ def show_fee(user:ShowFeeRequest,db:Session=Depends(get_db)):
         print(standard)
         feestruct=db.query(FeeStructure).filter(FeeStructure.class_number==int(standard)).first()
         return feestruct
+
+@router.post("/create_kota")
+def Create_kota(kota:KotaCreate,db:Session=Depends(get_db)):
+        inskota=Kota(kotaname=kota.kotaname,discount=kota.discount,kotadiscription=kota.kotadiscription)
+        db.add(inskota)
+        db.commit()
+        db.refresh(inskota)
+        return inskota

@@ -1,4 +1,4 @@
-from pydantic import BaseModel,EmailStr
+from pydantic import BaseModel,EmailStr,Field
 from datetime import datetime
 from typing import Optional
 from typing import Literal
@@ -59,3 +59,15 @@ class ShowFeeRequest(BaseModel):
 
 class fiter_standard_fee(BaseModel):
   standard_value:int
+
+class KotaBase(BaseModel):
+    kotaname: str = Field(..., example="Premium Kota")
+    discount: int = Field(0, example=10)
+    kotadiscription: Optional[str] = Field(None, example="Special discounted Kota")
+
+class KotaCreate(KotaBase):
+    pass
+
+
+class KotaResponse(KotaBase):
+    id: int
