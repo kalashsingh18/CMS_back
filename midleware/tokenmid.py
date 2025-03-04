@@ -6,7 +6,7 @@ from starlette.responses import JSONResponse
 class JWTAuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         # Exclude authentication and docs routes
-        if request.url.path in ["/login", "/signUP", "/docs", "/openapi.json", "/redoc","/api/v1/signup/"]:
+        if request.url.path in ["/api/v1/login/", "/docs", "/openapi.json", "/redoc","/api/v1/signup/","/static/profileimages/image.png"]:
             return await call_next(request)
 
         # Get token from headers

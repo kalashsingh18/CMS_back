@@ -11,6 +11,7 @@ from models import models
 from dbconfiguration import dbconfig
 from router import profile,user,fee_struct,admin
 from dependencies import get_db 
+from fastapi.staticfiles import StaticFiles
 
 
 profile_router =profile.createprofile.router
@@ -30,6 +31,7 @@ app.include_router(admin_router, prefix="/api/v1", tags=["admin"])
 
 
 app.add_middleware(JWTAuthMiddleware)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 dbconfig.Base.metadata.drop_all(bind=dbconfig.engine)  # Drops all tables
 dbconfig.Base.metadata.create_all(bind=dbconfig.engine)  # Recreates all tables
 

@@ -7,6 +7,12 @@ class UserTypeEnum(str, enum.Enum):
     ADMIN = "admin"
     TEACHER = "teacher"
     STUDENT = "student"
+
+class Fee_status(str, enum.Enum):
+    PAID = "paid"
+    PENDING = "pending"
+    OVERDUE = "overdue"
+
 class UserLogin(BaseModel):
     username: str
     email: EmailStr
@@ -40,10 +46,38 @@ class Usercreate(BaseModel):
     mothername:str
 
 class ProfileCreate(BaseModel):
+    user_type: UserTypeEnum
+    user_id:int
+    bloodgroup: Optional[str] = None
+    age: Optional[int] = None
+  
+    
+    adhar_number: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    country: Optional[str] = None
+    pincode: Optional[str] = None
+    profile_image: Optional[str] = None
+
+class ProfileResponse(BaseModel):
+    id: int
     user_id: int
     user_type: UserTypeEnum
     bloodgroup: Optional[str] = None
     adhar_number: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    country: Optional[str] = None
+    pincode: Optional[str] = None
+    profile_image: Optional[str] = None
+    fee_status: Optional[Fee_status] = None
+    left_fees: Optional[int] = None
+
+    class Config:
+        from_attributes = True
+
 
 
 class FeeStructureBase(BaseModel):
