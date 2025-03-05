@@ -6,10 +6,12 @@ from starlette.responses import JSONResponse
 class JWTAuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         # Exclude authentication and docs routes
-        if request.url.path in ["/api/v1/login/", "/docs", "/openapi.json", "/redoc","/api/v1/signup/","/static/profileimages/image.png"]:
+        print(request.url.path,"request.url.path")
+        if request.url.path in ["*"]:
             return await call_next(request)
-
-        # Get token from headers
+        return await call_next(request)
+        
+        # Get token from headers  
         token = request.headers.get("Authorization")
         if not token or not token.startswith("Bearer "):
             raise HTTPException(status_code=401, detail="Missing or invalid token format")

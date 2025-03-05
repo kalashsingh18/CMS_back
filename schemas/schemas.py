@@ -3,20 +3,36 @@ from datetime import datetime
 from typing import Optional
 from typing import Literal
 import enum
+from pydantic import BaseModel, EmailStr, root_validator
+
+
 class UserTypeEnum(str, enum.Enum):
     ADMIN = "admin"
     TEACHER = "teacher"
     STUDENT = "student"
+
 
 class Fee_status(str, enum.Enum):
     PAID = "paid"
     PENDING = "pending"
     OVERDUE = "overdue"
 
+
 class UserLogin(BaseModel):
-    username: str
-    email: EmailStr
-    password: str 
+    username: Optional[str] = None
+    email: Optional[EmailStr] = None
+    password: str
+
+
+    @root_validator(pre=True)
+    def check_username_or_email(cls, values):
+        username, email = values.get("username"), values.get("email")
+        if not username and not email:
+            raise ValueError("Either username or email must be provided.")
+        if username and email:
+            raise ValueError("Provide only one field: either username or email.")
+        return values
+
 
 class User(BaseModel):
     id: int
@@ -50,8 +66,6 @@ class ProfileCreate(BaseModel):
     user_id:int
     bloodgroup: Optional[str] = None
     age: Optional[int] = None
-  
-    
     adhar_number: Optional[str] = None
     address: Optional[str] = None
     city: Optional[str] = None

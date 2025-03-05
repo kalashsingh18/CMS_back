@@ -12,7 +12,7 @@ from dbconfiguration import dbconfig
 from router import profile,user,fee_struct,admin
 from dependencies import get_db 
 from fastapi.staticfiles import StaticFiles
-
+from fastapi.middleware.cors import CORSMiddleware
 
 profile_router =profile.createprofile.router
 user_route =user.creation.router
@@ -22,7 +22,16 @@ admin_router=admin.filter.router
 
 app = FastAPI()
 
-
+origins = [
+    "*"
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(profile_router, prefix="/api/v1", tags=["Profile"])
 app.include_router(user_route, prefix="/api/v1", tags=["User"])
 app.include_router(fee_router, prefix="/api/v1", tags=["fee_structure"])

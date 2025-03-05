@@ -17,14 +17,24 @@ def signup(user:schemas.Usercreate,db: Session = Depends(get_db)):
     db.refresh(db_user)
     acess_token=token.create_access_token({"email":db_user.email})
     
-    return {"user_id":db_user.id,"acess_token":acess_token}
+    return {"user_id":db_user.id,"acess_token":acess_token,"response":db_user}
 
 
 @router.post("/login/")
 def login_user(user: schemas.UserLogin,db: Session = Depends(get_db)):
-    response=db.query(User).filter(User.username == user.username, User.email==user.email).first()
+    print(user,"user")
+    if user.username:
+        response=db.query(User).filter(User.username == user.username).first()
+    elif user.email:
+        response=db.query(User).filter(User.email==user.email).first()
+    else:
+        raise HTTPException(status_code=400, detail="Either username or email must be provided.")
     if not response:
-        print("nothing")
+        return {"message":"user not found"}
+    check_password=hashed.verify_password(user.password,response.password)
+    if not check_password:
+        raise HTTPException(status_code=400, detail="Invalid password.")
+    
     else:
         print(response,"response")
         acess_token=token.create_access_token({"email":response.email})
